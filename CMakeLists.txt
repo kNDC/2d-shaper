@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     # Не больше одной ошибки за раз
     add_compile_options(-fmax-errors=1)
+    add_compile_options(-fconcepts-diagnostics-depth=2)
 
     # Игнорируем ошибки matplotplusplus
     add_compile_options($<$<CXX_COMPILER_ID:GNU,Clang>:-Wno-deprecated-declarations>
@@ -29,8 +30,7 @@ FetchContent_MakeAvailable(CPM)
 CPMAddPackage(
     NAME matplotplusplus
     GITHUB_REPOSITORY alandefreitas/matplotplusplus
-    GIT_TAG v1.2.2
-)
+    GIT_TAG v1.2.2)
 
 file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.hpp")
 file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
@@ -43,11 +43,12 @@ add_library(${PROJECT_NAME}_imp STATIC "${CMAKE_SOURCE_DIR}/src/main.cpp" ${SRC_
 target_include_directories(${PROJECT_NAME}_imp
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+
     # Помечаем используемые сторонние библиотеки как external, чтобы игнорировать их сообщения об ошибках
     SYSTEM PUBLIC
         ${CPM_PACKAGE_NAME_INCLUDE_DIRS}
 )
-target_link_libraries(${PROJECT_NAME}_imp PRIVATE matplot)
+target_link_libraries(${PROJECT_NAME}_imp PRIVATE matplot "stdc++exp")
 
 # Создаём исполняемый таргет и линкуем к нему статическую библиотеку
 add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
@@ -61,8 +62,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_imp)
 file(GLOB TEST_SRC_FILES "${CMAKE_SOURCE_DIR}/tests/*.cpp")
 
 add_executable(unit_tests "${TEST_SRC_FILES}")
-target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_imp GTest::GTest GTest::Main)
-target_include_directories(unit_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_imp 
+    GTest::GTest GTest::Main)
+target_include_directories(unit_tests PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Включаем тестирование
 enable_testing()
