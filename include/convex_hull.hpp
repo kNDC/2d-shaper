@@ -1,30 +1,36 @@
 #pragma once
+
 #include "geometry.hpp"
-#include <algorithm>
-#include <ranges>
-#include <stack>
+
 #include <vector>
+#include <stack>
+#include <ranges>
 
-namespace geometry::convex_hull {
+#include <expected>
 
-double CrossProduct(Point2D p1, Point2D middle, Point2D p2);
+#include <algorithm>
 
-class StackForGrahamScan {
-public:
-    void Push(const Point2D &p) { s.push_back(p); }
-    void Pop() { s.pop_back(); }
+namespace geometry::convex_hull
+{
+    double CrossProduct(Point2D p1, Point2D middle, Point2D p2);
 
-    size_t Size() { return s.size(); }
-    Point2D Top() { return s.back(); }
-    Point2D NextToTop() { return *std::prev(s.end(), 2); }
+    class StackForGrahamScan
+    {
+    public:
+        void Push(const Point2D& p) { s.push_back(p); }
+        void Pop() { s.pop_back(); }
 
-    std::vector<Point2D> &&Extract() & { return std::move(s); }
+        size_t Size() { return s.size(); }
+        Point2D Top() { return s.back(); }
+        Point2D NextToTop() { return *std::prev(s.end(), 2); }
 
-private:
-    std::vector<Point2D> s;
-};
+        std::vector<Point2D>&& Extract() & { return std::move(s); }
 
-//Ваш код здесь
-std::vector<Point2D> GrahamScan(std::span<Point2D> points);
+    private:
+        std::vector<Point2D> s;
+    };
 
+    //Ваш код здесь
+    std::expected<std::vector<Point2D>, std::logic_error> 
+    GrahamScan(std::span<Point2D> points) noexcept;
 }  // namespace geometry::convex_hull

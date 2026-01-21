@@ -5,26 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "type": "cppdbg",
             "request": "launch",
             "name": "Launch GeometryApp",
             "program": "${workspaceFolder}/build/GeometryApp",
             "args": [
             ],
             "cwd": "${workspaceFolder}/build",
-            "preLaunchTask": "GCC: Build Debug",
-            "initCommands": ["settings set target.disable-aslr false"]
+            "preLaunchTask": "GCC: Build Debug"
         },
         {
-            "type": "lldb",
+            "type": "cppdbg",
             "request": "launch",
             "name": "Launch Debug unit_tests",
             "program": "${workspaceFolder}/build/unit_tests",
             "args": [
             ],
             "cwd": "${workspaceFolder}/build",
-            "preLaunchTask": "GCC: Build Debug",
-            "initCommands": ["settings set target.disable-aslr false"]
+            "preLaunchTask": "GCC: Build Debug"
         }
     ]
 }
