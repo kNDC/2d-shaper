@@ -110,7 +110,7 @@ namespace geometry::queries
             Point2D point_vec = point - line.start;
 
             double cross = point_vec.Cross(line_vec);
-            if (std::abs(cross) > 1e-10) return false;
+            if (DblGreater{}(std::abs(cross), 0)) return false;
 
             double dot = point_vec.Dot(line_vec);
             double line_length_sq = line_vec.Dot(line_vec);
@@ -152,7 +152,8 @@ namespace geometry::queries
         }
 
     private:
-        bool point_in_polygon_ray_casting(const Point2D& p, const std::vector<Point2D>& vertices) const
+        bool point_in_polygon_ray_casting(const Point2D& p, 
+            const std::vector<Point2D>& vertices) const
         {
             int intersections = 0;
             size_t n = vertices.size();
